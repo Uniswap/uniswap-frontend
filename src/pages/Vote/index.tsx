@@ -38,8 +38,8 @@ const Proposal = styled(Button)`
   width: 100%;
   margin-top: 1rem;
   border-radius: 12px;
-  display: grid;
-  grid-template-columns: 48px 1fr 120px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   text-align: left;
   outline: none;
@@ -57,10 +57,16 @@ const Proposal = styled(Button)`
 
 const ProposalNumber = styled.span`
   opacity: 0.6;
+  flex: 0 0 40px;
 `
 
 const ProposalTitle = styled.span`
   font-weight: 600;
+  flex: 1;
+  max-width: 420px;
+  white-space: initial;
+  word-wrap: break-word;
+  padding-right: 10px;
 `
 
 const VoteCard = styled(DataCard)`
