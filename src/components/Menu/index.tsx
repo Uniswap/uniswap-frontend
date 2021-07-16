@@ -81,7 +81,7 @@ const StyledMenu = styled.div`
 
 const MenuFlyout = styled.span<{ flyoutAlignment?: FlyoutAlignment }>`
   min-width: 196px;
-  max-height: 350px;
+  max-height: 364px;
   overflow: auto;
   background-color: ${({ theme }) => theme.bg1};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
@@ -196,12 +196,14 @@ export default function Menu() {
             case 'lang':
               return (
                 <MenuFlyout>
-                  <ToggleMenuItem onClick={() => setMenu('main')}>
-                    <ChevronLeft size={16} />
+                  <ToggleMenuItem style={{ opacity: 0.6 }} onClick={() => setMenu('main')}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      <ChevronLeft size={16} style={{ marginRight: '12px' }} /> Back
+                    </span>
                   </ToggleMenuItem>
                   {SUPPORTED_LOCALES.map((locale) => (
                     <ToggleMenuItem onClick={() => setLocale(locale)} key={locale}>
-                      <div>{LOCALE_LABEL[locale]}</div>
+                      <div style={{ wordSpacing: '8px', textAlign: 'left' }}>{LOCALE_LABEL[locale]}</div>
                       {currentLocale === locale && <Check opacity={0.6} size={16} />}
                     </ToggleMenuItem>
                   ))}
