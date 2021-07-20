@@ -1,6 +1,6 @@
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { Route, Switch } from 'react-router-dom'
-import { getOutput } from 'slippage'
+import { getOutput, getOutput2 } from 'slippage'
 import styled from 'styled-components/macro'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import AddressClaimModal from '../components/claim/AddressClaimModal'
@@ -70,7 +70,8 @@ function TopLevelModals() {
   return <AddressClaimModal isOpen={open} onDismiss={toggle} />
 }
 
-getOutput()
+// getOutput()
+getOutput2()
 export default function App() {
   return (
     <ErrorBoundary>
