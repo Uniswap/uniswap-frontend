@@ -49,7 +49,7 @@ export interface Colors {
   yellow3: Color
   blue1: Color
   blue2: Color
-
+  blue3: Color
   blue4: Color
 
   error: Color

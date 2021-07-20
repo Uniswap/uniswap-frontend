@@ -6,6 +6,9 @@ export interface EventFilter {
 export interface Log {
   topics: Array<string>
   data: string
+  transactionIndex: number
+  logIndex: number
+  blockNumber: number
 }
 
 /**

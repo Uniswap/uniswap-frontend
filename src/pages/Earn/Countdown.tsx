@@ -1,19 +1,37 @@
-import { useEffect, useMemo, useState } from 'react'
-import { STAKING_GENESIS, REWARDS_DURATION_DAYS } from '../../state/stake/hooks'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components/macro'
 import { TYPE } from '../../theme'
 
 const MINUTE = 60
 const HOUR = MINUTE * 60
 const DAY = HOUR * 24
-const REWARDS_DURATION = DAY * REWARDS_DURATION_DAYS
 
-export function Countdown({ exactEnd }: { exactEnd?: Date }) {
+const MonoFront = styled(TYPE.body)`
+  font-variant-numeric: tabular-nums;
+  color: ${({ theme }) => theme.blue3};
+  background-color: ${({ theme }) => theme.blue4};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+
+  > * {
+    font-size: 12px;
+  }
+`
+
+const Dot = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.blue3};
+`
+
+export function Countdown({ exactStart, exactEnd }: { exactStart: Date; exactEnd: Date }) {
   // get end/beginning times
-  const end = useMemo(
-    () => (exactEnd ? Math.floor(exactEnd.getTime() / 1000) : STAKING_GENESIS + REWARDS_DURATION),
-    [exactEnd]
-  )
-  const begin = useMemo(() => end - REWARDS_DURATION, [end])
+  const begin = Math.floor(exactStart.getTime() / 1000)
+  const end = Math.floor(exactEnd.getTime() / 1000)
 
   // get current time
   const [time, setTime] = useState(() => Math.floor(Date.now() / 1000))
@@ -38,7 +56,7 @@ export function Countdown({ exactEnd }: { exactEnd?: Date }) {
   } else {
     const ongoing = timeUntilEnd >= 0
     if (ongoing) {
-      message = 'Rewards end in'
+      message = ''
       timeRemaining = timeUntilEnd
     } else {
       message = 'Rewards have ended!'
@@ -55,15 +73,16 @@ export function Countdown({ exactEnd }: { exactEnd?: Date }) {
   const seconds = timeRemaining
 
   return (
-    <TYPE.black fontWeight={400}>
-      {message}{' '}
+    <MonoFront fontWeight={700}>
+      <span style={{ fontSize: '12px', marginRight: '4px' }}>{message !== '' ? message : <Dot />}</span>
       {Number.isFinite(timeRemaining) && (
         <code>
-          {`${days}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+          {`${days}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds
             .toString()
             .padStart(2, '0')}`}
+          s
         </code>
       )}
-    </TYPE.black>
+    </MonoFront>
   )
 }

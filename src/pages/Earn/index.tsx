@@ -1,17 +1,16 @@
-import JSBI from 'jsbi'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components/macro'
-import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
-import { TYPE, ExternalLink } from '../../theme'
-import PoolCard from '../../components/earn/PoolCard'
-import { RowBetween } from '../../components/Row'
-import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/earn/styled'
-import { Countdown } from './Countdown'
-import Loader from '../../components/Loader'
-import { useActiveWeb3React } from '../../hooks/web3'
-import { BIG_INT_ZERO } from '../../constants/misc'
-import { OutlineCard } from '../../components/Card'
+import { TYPE } from '../../theme'
+import { RowBetween, RowFixed } from '../../components/Row'
+import { CardSection, DataCard, CardBGImage } from '../../components/earn/styled'
+import { DarkCard } from '../../components/Card'
 import { Trans } from '@lingui/macro'
+import useTheme from 'hooks/useTheme'
+import { GenericBadge } from 'components/Badge'
+import { Zap } from 'react-feather'
+import { useAllIncentives } from '../../hooks/incentives/useAllIncentives'
+import ProgramCard from './ProgramCard'
+import Loader from 'components/Loader'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -23,7 +22,7 @@ const TopSection = styled(AutoColumn)`
   width: 100%;
 `
 
-const PoolSection = styled.div`
+const ProgramSection = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   column-gap: 10px;
@@ -39,83 +38,52 @@ flex-direction: column;
 `
 
 export default function Earn() {
-  const { chainId } = useActiveWeb3React()
+  const theme = useTheme()
 
-  // staking info for connected account
-  const stakingInfos = useStakingInfo()
-
-  /**
-   * only show staking cards with balance
-   * @todo only account for this if rewards are inactive
-   */
-  const stakingInfosWithBalance = stakingInfos?.filter((s) => JSBI.greaterThan(s.stakedAmount.quotient, BIG_INT_ZERO))
-
-  // toggle copy if rewards are inactive
-  const stakingRewardsExist = Boolean(typeof chainId === 'number' && (STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0)
+  const { loading, incentives: allIncentives } = useAllIncentives()
 
   return (
     <PageWrapper gap="lg" justify="center">
       <TopSection gap="md">
         <DataCard>
-          <CardBGImage />
-          <CardNoise />
           <CardSection>
             <AutoColumn gap="md">
-              <RowBetween>
-                <TYPE.white fontWeight={600}>
-                  <Trans>Uniswap liquidity mining</Trans>
-                </TYPE.white>
-              </RowBetween>
-              <RowBetween>
-                <TYPE.white fontSize={14}>
-                  <Trans>
-                    Deposit your Liquidity Provider tokens to receive UNI, the Uniswap protocol governance token.
-                  </Trans>
-                </TYPE.white>
-              </RowBetween>{' '}
-              <ExternalLink
-                style={{ color: 'white', textDecoration: 'underline' }}
-                href="https://uniswap.org/blog/uni/"
-                target="_blank"
-              >
-                <TYPE.white fontSize={14}>
-                  <Trans>Read more about UNI</Trans>
-                </TYPE.white>
-              </ExternalLink>
+              <GenericBadge style={{ backgroundColor: theme.blue4 }}>
+                <RowFixed>
+                  <Zap stroke={theme.blue3} size="16px" strokeWidth={'3px'} />
+                  <TYPE.body fontWeight={700} color={theme.blue3} ml="4px">
+                    Boosted
+                  </TYPE.body>
+                </RowFixed>
+              </GenericBadge>
+              <TYPE.body fontWeight={600} fontSize="24px" color={theme.blue3}>
+                <Trans>Earn more with boosts</Trans>
+              </TYPE.body>
+              <TYPE.body color={theme.blue3}>
+                <Trans>Learn about liquidity mining and staking rewards</Trans>
+              </TYPE.body>
             </AutoColumn>
           </CardSection>
           <CardBGImage />
-          <CardNoise />
         </DataCard>
       </TopSection>
 
-      <AutoColumn gap="lg" style={{ width: '100%', maxWidth: '720px' }}>
-        <DataRow style={{ alignItems: 'baseline' }}>
-          <TYPE.mediumHeader style={{ marginTop: '0.5rem' }}>
-            <Trans>Participating pools</Trans>
-          </TYPE.mediumHeader>
-          <Countdown exactEnd={stakingInfos?.[0]?.periodFinish} />
-        </DataRow>
-
-        <PoolSection>
-          {stakingRewardsExist && stakingInfos?.length === 0 ? (
-            <Loader style={{ margin: 'auto' }} />
-          ) : !stakingRewardsExist ? (
-            <OutlineCard>
-              <Trans>No active pools</Trans>
-            </OutlineCard>
-          ) : stakingInfos?.length !== 0 && stakingInfosWithBalance.length === 0 ? (
-            <OutlineCard>
-              <Trans>No active pools</Trans>
-            </OutlineCard>
-          ) : (
-            stakingInfosWithBalance?.map((stakingInfo) => {
-              // need to sort by added liquidity here
-              return <PoolCard key={stakingInfo.stakingRewardAddress} stakingInfo={stakingInfo} />
-            })
-          )}
-        </PoolSection>
-      </AutoColumn>
+      <DarkCard>
+        <AutoColumn gap="lg" style={{ width: '100%', maxWidth: '720px' }}>
+          <DataRow style={{ alignItems: 'baseline' }}>
+            <TYPE.body style={{ marginTop: '0.5rem' }}>
+              <Trans>Rewards programs</Trans>
+            </TYPE.body>
+          </DataRow>
+          <ProgramSection>
+            {loading ? (
+              <Loader />
+            ) : (
+              allIncentives?.map((incentive, i) => <ProgramCard key={`program-card-${i}`} incentive={incentive} />)
+            )}
+          </ProgramSection>
+        </AutoColumn>
+      </DarkCard>
     </PageWrapper>
   )
 }
