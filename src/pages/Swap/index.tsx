@@ -114,6 +114,7 @@ export default function Swap({ history }: RouteComponentProps) {
     allowedSlippage,
     currencyBalances,
     parsedAmount,
+    pricedAmount,
     currencies,
     inputError: swapInputError,
   } = useDerivedSwapInfo(toggledVersion)
@@ -140,7 +141,7 @@ export default function Swap({ history }: RouteComponentProps) {
     [independentField, parsedAmount, showWrap, trade]
   )
 
-  const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT])
+  const fiatValueInput = useUSDCValue(parsedAmounts[Field.INPUT] ?? pricedAmount)
   const fiatValueOutput = useUSDCValue(parsedAmounts[Field.OUTPUT])
   const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
 
