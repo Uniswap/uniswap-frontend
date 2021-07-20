@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { useActivePopups } from '../../state/application/hooks'
+import { useActivePopups, useIsAnyModalOpen } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
 import PopupItem from './PopupItem'
 import ClaimPopup from './ClaimPopup'
@@ -63,6 +63,12 @@ export default function Popups() {
   // need extra padding if network is not L1 Ethereum
   const { chainId } = useActiveWeb3React()
   const isNotOnMainnet = Boolean(chainId && chainId !== SupportedChainId.MAINNET)
+
+  const anyModalOpen = useIsAnyModalOpen()
+
+  if (anyModalOpen) {
+    return null
+  }
 
   return (
     <>

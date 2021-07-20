@@ -45,12 +45,30 @@ export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   return chainId ? state[chainId] ?? {} : {}
 }
 
+export function useTransaction(transactionHash?: string): TransactionDetails | undefined {
+  const allTransactions = useAllTransactions()
+
+  if (!transactionHash) {
+    return undefined
+  }
+
+  return allTransactions[transactionHash]
+}
+
 export function useIsTransactionPending(transactionHash?: string): boolean {
   const transactions = useAllTransactions()
 
   if (!transactionHash || !transactions[transactionHash]) return false
 
   return !transactions[transactionHash].receipt
+}
+
+export function useIsTransactionConfirmed(transactionHash?: string): boolean {
+  const transactions = useAllTransactions()
+
+  if (!transactionHash || !transactions[transactionHash]) return false
+
+  return Boolean(transactions[transactionHash].receipt)
 }
 
 /**

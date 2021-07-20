@@ -52,7 +52,7 @@ interface L1ChainInfo {
   readonly infoLink: string
   readonly label: string
 }
-interface L2ChainInfo extends L1ChainInfo {
+export interface L2ChainInfo extends L1ChainInfo {
   readonly bridge: string
   readonly logoUrl: string
 }

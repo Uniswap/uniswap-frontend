@@ -15,6 +15,11 @@ export function useModalOpen(modal: ApplicationModal): boolean {
   return openModal === modal
 }
 
+export function useIsAnyModalOpen(): boolean {
+  const openModal = useAppSelector((state: AppState) => state.application.openModal)
+  return openModal !== null
+}
+
 export function useToggleModal(modal: ApplicationModal): () => void {
   const open = useModalOpen(modal)
   const dispatch = useAppDispatch()
