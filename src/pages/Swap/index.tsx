@@ -20,7 +20,7 @@ import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import Loader from '../../components/Loader'
-import Row, { AutoRow, RowFixed } from '../../components/Row'
+import Row, { AutoRow, RowFixed, RowBetween } from '../../components/Row'
 import BetterTradeLink from '../../components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -110,6 +110,7 @@ export default function Swap({ history }: RouteComponentProps) {
   const {
     v2Trade,
     v3TradeState: { trade: v3Trade, state: v3TradeState },
+    routerTrade,
     toggledTrade: trade,
     allowedSlippage,
     currencyBalances,
@@ -494,7 +495,21 @@ export default function Swap({ history }: RouteComponentProps) {
                       setShowInverted={setShowInverted}
                     />
                     <MouseoverTooltipContent
-                      content={<AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />}
+                      content={
+                        <>
+                          <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
+                          <RowBetween>
+                            <RowFixed>
+                              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+                                <Trans>Routing API</Trans>
+                              </TYPE.black>
+                            </RowFixed>
+                            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+                              {routerTrade}
+                            </TYPE.black>
+                          </RowBetween>
+                        </>
+                      }
                     >
                       <StyledInfo />
                     </MouseoverTooltipContent>
