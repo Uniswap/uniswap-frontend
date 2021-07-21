@@ -43,7 +43,8 @@ const FLIP_HANDLE_THRESHOLD_PX = 20
 // margin to prevent tick snapping from putting the brush off screen
 const BRUSH_EXTENT_MARGIN_PX = 2
 
-const compare = (a1: [number, number], a2: [number, number]): boolean => a1[0] !== a2[0] || a1[1] !== a2[1]
+const compare = (a1: [number, number], a2: [number, number], xScale: ScaleLinear<number, number>): boolean =>
+  xScale(a1[0]) !== xScale(a2[0]) || xScale(a1[1]) !== xScale(a2[1])
 
 export const Brush = ({
   id,
@@ -62,7 +63,7 @@ export const Brush = ({
   interactive: boolean
   brushLabelValue: (d: 'w' | 'e', x: number) => string
   brushExtent: [number, number]
-  setBrushExtent: (extent: [number, number]) => void
+  setBrushExtent: (extent: [number, number], mode: 'drag' | 'space' | 'handle' | 'center') => void
   innerWidth: number
   innerHeight: number
   westHandleColor: string
@@ -79,7 +80,9 @@ export const Brush = ({
   const previousBrushExtent = usePrevious(brushExtent)
 
   const brushed = useCallback(
-    ({ type, selection }: D3BrushEvent<unknown>) => {
+    (event: D3BrushEvent<unknown>) => {
+      const { type, selection, mode } = event
+
       if (!selection) {
         setLocalBrushExtent(null)
         return
@@ -88,8 +91,8 @@ export const Brush = ({
       const scaled = (selection as [number, number]).map(xScale.invert) as [number, number]
 
       // avoid infinite render loop by checking for change
-      if (type === 'end' && compare(brushExtent, scaled)) {
-        setBrushExtent(scaled)
+      if (type === 'end' && compare(brushExtent, scaled, xScale)) {
+        setBrushExtent(scaled, mode)
       }
 
       setLocalBrushExtent(scaled)
@@ -118,7 +121,7 @@ export const Brush = ({
 
     brushBehavior.current(select(brushRef.current))
 
-    if (previousBrushExtent && compare(brushExtent, previousBrushExtent)) {
+    if (previousBrushExtent && compare(brushExtent, previousBrushExtent, xScale)) {
       select(brushRef.current)
         .transition()
         .call(brushBehavior.current.move as any, brushExtent.map(xScale))

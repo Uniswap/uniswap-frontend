@@ -56,7 +56,7 @@ export function Chart({
 
   useEffect(() => {
     if (!brushDomain) {
-      onBrushDomainChange(xScale.domain() as [number, number])
+      onBrushDomainChange(xScale.domain() as [number, number], 'center')
     }
   }, [brushDomain, onBrushDomainChange, xScale])
 

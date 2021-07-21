@@ -52,7 +52,7 @@ export interface LiquidityChartRangeInputProps {
 
   brushLabels: (d: 'w' | 'e', x: number) => string
   brushDomain: [number, number] | undefined
-  onBrushDomainChange: (domain: [number, number]) => void
+  onBrushDomainChange: (domain: [number, number], mode: 'drag' | 'space' | 'handle' | 'center') => void
 
   zoomLevels: ZoomLevels
 }

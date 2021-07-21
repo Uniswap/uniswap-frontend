@@ -63,6 +63,7 @@ import { useDerivedPositionInfo } from 'hooks/useDerivedPositionInfo'
 import { PositionPreview } from 'components/PositionPreview'
 import FeeSelector from 'components/FeeSelector'
 import RangeSelector from 'components/RangeSelector'
+import PresetsButtons from 'components/RangeSelector/PresetsButtons'
 import RateToggle from 'components/RateToggle'
 import { BigNumber } from '@ethersproject/bignumber'
 import { AddRemoveTabs } from 'components/NavigationTabs'
@@ -609,8 +610,8 @@ export default function AddLiquidity({
                     currencyA={baseCurrency}
                     currencyB={quoteCurrency}
                     handleRateToggle={() => {
-                      onLeftRangeInput((invertPrice ? priceLower : priceUpper?.invert())?.toSignificant(6) ?? '')
-                      onRightRangeInput((invertPrice ? priceUpper : priceLower?.invert())?.toSignificant(6) ?? '')
+                      onLeftRangeInput('')
+                      onRightRangeInput('')
                       history.push(
                         `/add/${currencyIdB as string}/${currencyIdA as string}${feeAmount ? '/' + feeAmount : ''}`
                       )
@@ -867,6 +868,13 @@ export default function AddLiquidity({
                               feeAmount={feeAmount}
                               ticksAtLimit={ticksAtLimit}
                             />
+                            {!noLiquidity && (
+                              <PresetsButtons
+                                setFullRange={() => {
+                                  setShowCapitalEfficiencyWarning(true)
+                                }}
+                              />
+                            )}
                           </AutoColumn>
                         </StackedItem>
 
